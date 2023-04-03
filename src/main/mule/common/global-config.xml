@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	 <http:listener-config name="customer-xpapi-raml-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.listener.port}" readTimeout="${http.listener.readtimeout}"/>
+    </http:listener-config>
+    <apikit:config name="customer-xpapi-raml-config" api="customer-xpapi-raml.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<configuration doc:name="Configuration" doc:id="7ab90ba2-8dc3-47a5-b115-e9fc5e70f39b" defaultErrorHandler-ref="global-errorError_Handler" />
+	<configuration-properties doc:name="Configuration properties" doc:id="38d1eb36-2419-4661-a616-5a92ceed6dbf" file="properties/${mule.env}" />
+	
+</mule>
