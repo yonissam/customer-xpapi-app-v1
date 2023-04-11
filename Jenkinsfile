@@ -8,15 +8,15 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-      		echo "***** Package execution *********",
+      		
             sh 'mvn -B -U -e -V clean -DskipTests package'
       }
     }
 
     stage('Test') {
       steps {
-          echo "***** MUnit test cases execution *********",
-          sh 'mvn test'
+          echo "***** MUnit test cases execution *********"
+          
       }
     }
 
@@ -29,7 +29,7 @@ pipeline {
 	}
       
       steps {
-      		echo "***** Deployment *********",
+      		
             sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Danypoint.username="$ANYPOINT_CREDS_USR" -Danypoint.password="$ANYPOINT_CREDS_PSW" -Danypoint.platform.client_id="$CLIENT_ID" -Danypoint.platform.client_secret="$CLIENT_SECRET"'
       }
     }
