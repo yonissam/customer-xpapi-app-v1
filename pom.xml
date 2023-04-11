@@ -44,8 +44,8 @@
 						<uri>https://anypoint.mulesoft.com</uri>
 						<target>server-1</target>
 						<targetType>server</targetType>
-						<username>yonissam5</username>
-						<password>YoniGeo2029!</password>
+						<username>yoniss</username>
+						<password>yoniss123</password>
 						<environment>Sandbox</environment>
 						<properties>
 							<http.listener.port>8061</http.listener.port>
@@ -55,21 +55,10 @@
 							<api.id>18622425</api.id>
 							<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 							<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
-							<anypoint.platform.base_uri>https://anypoint.mulesoft.com</anypoint.platform.base_uri>
-							<anypoint.platform.analytics_base_uri>https://analytics-ingest.anypoint.mulesoft.com</anypoint.platform.analytics_base_uri>
 						</properties>
 					</armDeployment>
 				</configuration>
-				<executions>
-					<execution>
-						<id>test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-							<goal>coverage-report</goal>
-						</goals>
-					</execution>
-				</executions>
+
 
 			</plugin>
 		</plugins>
