@@ -1,0 +1,109 @@
+#%RAML 1.0
+title: customer-xpapi-raml
+description: This RAML file will contain resources for customer experience API
+baseUri: http://localhost:8081/api
+version: v1
+
+securitySchemes:
+  OAuth 2.0: !include exchange_modules/60bcfbbb-656e-419c-a121-5c3a72bbb760/okta-oauth-security-scheme/1.0.1/okta-oauth-security-scheme.raml
+
+uses:
+  common-library: exchange_modules/60bcfbbb-656e-419c-a121-5c3a72bbb760/common-fragment-onboarding/1.0.9/common-fragment-onboarding.raml
+
+/customers:
+  /registration:
+    post:
+      securedBy: [OAuth 2.0]
+      description: This API will help register customer on Vio APP. This API will help to Automate onboarding process
+      is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+      queryParameters:
+        policyFlag:
+          required: true
+          type: boolean
+          example: true
+      body:
+        application/json:
+          type: common-library.request-registration
+      responses:
+        201:
+          body:
+            application/json:
+              type: common-library.response-registration
+
+  /login:
+    post:
+      securedBy: [OAuth 2.0]
+      description: This API will help to Login Customer. 
+      is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+      body:
+        application/json:
+          type: !include dataType/login-request-dataType.raml
+      responses:
+        200:
+          body:
+            application/json:
+              type: common-library.response-registration
+  /verify:
+    post:
+      securedBy: [OAuth 2.0]
+      description: This API will verify Customer Login OTP. 
+      is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+      body:
+        application/json:
+          type: common-library.verify-request
+      responses:
+        200:
+          body:
+            application/json:
+              type: common-library.verify-response
+  /reset:
+    post:
+      securedBy: [OAuth 2.0]
+      description: This API will help verify user to reset password. 
+      is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+      body:
+        application/json:
+          type: common-library.reset-request
+      responses:
+        200:
+          body:
+            application/json:
+              type: common-library.reset-response
+    /password:
+      put:
+        securedBy: [OAuth 2.0]
+        description: This API will reset user password. 
+        is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+        body:
+          application/json:
+            type: common-library.password-reset-request
+        responses:
+          200:
+            body:
+              application/json:
+                type: common-library.password-reset-response
+  /delete:
+    delete:
+      securedBy: [OAuth 2.0]
+      description: This API will delete user account. 
+      is: [common-library.authorization-header, common-library.common-header, common-library.data-header, common-library.common-error]
+      body:
+        application/json:
+          type: common-library.delete-request
+      responses:
+        200:
+          body:
+            application/json:
+              type: common-library.delete-response
+
+/ping:
+  get:
+    description: This API will help check if application is running or not.
+    is: [common-library.common-header, common-library.common-error]
+    responses:
+      200:
+        body:
+          application/json:
+            type: !include dataType/health-check-dataType.raml
+
+        

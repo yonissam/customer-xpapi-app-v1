@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="verify-implementationFlow" doc:id="6fc21c9e-2ada-446b-ab56-013446f5d93a" >
+		<set-variable value='#[now() &gt;&gt; "UTC"]' doc:name="Set Variable" doc:id="c032830e-aa86-4a8b-8cd7-1484f831243b" variableName="start" />
+		<logger level="INFO" doc:name="Verify Request Logger" doc:id="302398ce-16f9-44cb-9327-22233304048a" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStamp: now() &gt;&gt; &quot;UTC&quot;,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend UI&quot;,&#10;    DestinationApplication: &quot;Verify process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Request verify process API&quot;&#10;}]" />
+		<http:request method="POST" doc:name="Verify Process API Request" doc:id="0042d8b9-5afc-4edd-8cf1-cd674f1a0761" config-ref="HTTP_Request_configuration" path="${http.request.path.verify}" >
+			<http:body ><![CDATA[#[vars.requestData.payload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"clientSecret" : vars.requestData.headers.clientsecret,
+	"x-vio-transactionId" : vars.requestData.headers.'x-vio-transactionid',
+	"clientId" : vars.requestData.headers.clientid
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Verify End Logger" doc:id="bf0ed05d-1336-4d0a-9775-4cd0190fc6ca" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.start,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Experience UI&quot;,&#10;    DestinationApplication: &quot;Verify process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Response verify process API&quot;&#10;}]" />
+		<ee:transform doc:name="Transform Message" doc:id="4fd0327e-c919-466c-93eb-8017532677c7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"customersResponse" : {
+		"eventInstanceId" : vars.requestData.headers.'x-vio-transactionid',
+		"status" : "success"
+}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler ref="global-errorError_Handler" />
+	</flow>
+</mule>

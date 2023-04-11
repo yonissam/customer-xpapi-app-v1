@@ -1,0 +1,20 @@
+http:
+  listener:
+    port: "8061"
+    readtimeout: "30000"
+  request:
+    host: "192.168.0.136"
+    port: "8062"
+    path: 
+      register: "/api/customers/registration"
+      login: "/api/customers/login"
+      verify: "/api/customers/verify"
+      reset: "/api/customers/reset"
+      resetpassword: "/api/customers/reset/password"
+      delete: "/api/customers/delete"
+    
+  
+  
+  
+
+ 

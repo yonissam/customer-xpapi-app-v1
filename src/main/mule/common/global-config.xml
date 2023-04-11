@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cors="http://www.mulesoft.org/schema/mule/cors" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	 <http:listener-config name="xpapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.listener.port}" readTimeout="${http.listener.readtimeout}"/>
+		<http:listener-interceptors >
+			<http:cors-interceptor>
+				<http:origins >
+					<http:public-resource />
+				</http:origins>
+			</http:cors-interceptor>
+		</http:listener-interceptors>
+    
+</http:listener-config>
+    <apikit:config name="api-config" api="api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" disableValidations="true"/>
+	<configuration doc:name="Configuration" doc:id="7ab90ba2-8dc3-47a5-b115-e9fc5e70f39b" defaultErrorHandler-ref="global-errorError_Handler" />
+	<configuration-properties doc:name="Configuration properties" doc:id="38d1eb36-2419-4661-a616-5a92ceed6dbf" file="properties/${mule.env}.yaml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="10e442bb-349c-4bf7-b9ac-113e73472ac0" >
+		<http:request-connection host="${http.request.host}" port="${http.request.port}" connectionIdleTimeout="60000"/>
+	</http:request-config>
+	<api-gateway:autodiscovery apiId="18622425" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="f96f631d-8944-4189-aeff-e1bc49bb0a97" flowRef="api-main" />
+	
+</mule>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    
+    
+    <flow name="api-main">
+        <http:listener config-ref="xpapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+		        <apikit:router config-ref="api-config" doc:id="dbc5d874-23e9-414e-8465-4262acaac08e"/>
+		<error-handler ref="global-errorError_Handler" />
+        
+    </flow>
+    <flow name="api-console">
+        <http:listener config-ref="xpapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-config" />
+		<error-handler ref="global-errorError_Handler" />
+       
+    </flow>
+    <flow name="put:\customers\reset\password:application\json:api-config">
+		<flow-ref doc:name="Flow Reference" doc:id="2964ca95-6de3-42b3-a7ef-14bea46e15cc" name="initialize-request-data" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="63ec8946-2afe-4ba7-9df0-dc2106bc4f56" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Reset password process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START reset password process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="1cd21f73-9c51-4910-bcc6-34bce1c0d72e" name="password-reset-implementationFlow" />
+		<logger level="INFO" doc:name="End Logger" doc:id="49c06bec-f3df-4847-8229-e6f712a51747" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Reset password process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END reset password process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+    <flow name="delete:\customers\delete:application\json:api-config">
+       	<flow-ref doc:name="Flow Reference" doc:id="ddc8743d-41b1-46fd-be8f-cd0651527512" name="initialize-request-data" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="f59adc05-790d-458c-80e6-3f27446d37ae" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Delete process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START delete process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="01839e02-08d7-4fd0-b2ef-e787183c2ccf" name="delete-implementationFlow" />
+		<logger level="INFO" doc:name="End Logger" doc:id="022cf0f2-45d9-4805-9799-737d2d58d746" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Delete process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END delete process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+    <flow name="get:\ping:api-config">
+         <flow-ref doc:name="Flow Reference" doc:id="5076b544-ad22-4eba-b1c1-37eb806bd488" name="initialize-request-data"/>
+        <logger level="INFO" doc:name="Start Logger" doc:id="42d678a0-2d52-4573-8b5a-a1b72282da6f" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Health Check&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START&quot;&#10;}]" />
+		<ee:transform doc:name="Transform Message" doc:id="50ab933f-70d9-4b25-bff8-a166fba58f71">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+		"eventInstanceId" : attributes.headers.'x-vio-transactionId',
+		"status" : "success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="02871dd0-0e8b-4615-8e56-1fe8f59be426" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Health Check&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+    <flow name="post:\customers\login:application\json:api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="941810d8-9762-4354-a2f9-61bade594634" name="initialize-request-data" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="1e33263f-7d4d-453b-936a-859c8f54b804" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Login Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START Login Process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="3311b107-96a4-4939-ba8b-77ca80e8efe1" name="login-implementationFlow" />
+		<logger level="INFO" doc:name="End Logger" doc:id="ffcbc70f-9c67-442a-902a-3c52fea47c2d" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Login Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END Login Process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+    <flow name="post:\customers\registration:application\json:api-config" doc:id="c2cd2fc7-bb3e-4d2c-89d2-a18f37676717">
+        <flow-ref doc:name="Flow Reference" doc:id="4bd743ca-b1d8-47b5-8413-4eb6c9a6e244" name="initialize-request-data" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="e1caf840-18e9-47f5-9cb1-ef1a1671a092" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Registration Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START Registration Process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="9bfe7c3d-7d71-4b76-9f48-d7c56a64aa01" name="registration-implementationFlow"/>
+		<logger level="INFO" doc:name="End Logger" doc:id="e9a70ad5-88ac-4a24-b78a-3c4179cac75c" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Registration Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END Registration Process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+    <flow name="post:\customers\reset:application\json:api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="87691923-1c92-42e0-b028-a888308000e6" name="initialize-request-data" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="d5f70408-b92c-4662-98a7-bed80f38af40" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Reset process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START reset process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="5c2a0be9-fd0a-4362-9c83-720878cfbb49" name="reset-implementationFlow" />
+		<logger level="INFO" doc:name="End Logger" doc:id="f78b34c8-33f6-40d8-92aa-590f73a4129b" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Reset process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START reset process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+        
+    </flow>
+    <flow name="post:\customers\verify:application\json:api-config">
+		<flow-ref doc:name="Flow Reference" doc:id="afa6612f-6954-4653-a35e-79d859c2963a" name="initialize-request-data"/>
+		<logger level="INFO" doc:name="Start Logger" doc:id="980b647e-d2c3-445c-9857-45381d5871e9" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Verify Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;START Verify Process API&quot;&#10;}]" />
+		<flow-ref doc:name="Flow Reference" doc:id="8f08736d-5081-4dc9-9211-338bac5c2f72" name="verify-implementationFlow"/>
+		<logger level="INFO" doc:name="End Logger" doc:id="5ff405c5-6e5d-4e01-b661-bc76a0312f29" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.startTime,&#10;    TransactionId: attributes.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend App&quot;,&#10;    DestinationApplication: &quot;Verify Process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;END verify Process API&quot;&#10;}]" />
+		<error-handler ref="global-errorError_Handler" />
+    </flow>
+</mule>
