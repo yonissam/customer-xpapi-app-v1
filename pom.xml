@@ -37,16 +37,19 @@
 				<groupId>com.mulesoft.munit.tools</groupId>
 				<artifactId>munit-maven-plugin</artifactId>
 				<version>${munit.version}</version>
+				<extensions>true</extensions>
 				<configuration>
 					<armDeployment>
 						<muleVersion>4.4.0</muleVersion>
 						<uri>https://anypoint.mulesoft.com</uri>
 						<target>server-1</target>
 						<targetType>server</targetType>
-						<username>yoniss</username>
-						<password>yoniss123</password>
+						<username>yonissam5</username>
+						<password>YoniGeo2029!</password>
 						<environment>Sandbox</environment>
 						<properties>
+							<http.listener.port>8061</http.listener.port>
+							<http.listener.readtimeout>30000</http.listener.readtimeout>
 							<mule.env>dev</mule.env>
 							<mule.secretKey>MdQSwbvT9C14Nv#rFvpSI6OVP4mj4#@h</mule.secretKey>
 							<api.id>18622425</api.id>
