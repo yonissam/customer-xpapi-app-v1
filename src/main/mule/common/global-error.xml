@@ -6,47 +6,79 @@
 	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	<error-handler name="global-errorError_Handler" doc:id="c8e8ec78-ff0c-406f-b12d-c048a81ca411"> 
-	  <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform>
+	
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+            <logger level="INFO" doc:name="Error Logger" doc:id="e8105795-1cbe-4442-a50e-92d462130b7b" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Bad request"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 400,
+  "eventId": vars.requestData.headers.'x-vio-transactionid',
+  "error": {
+    "type": "BAD_REQUEST",
+    "title": "Invalid Request",
+    "details": "The input contains invalid data"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform>
+            <logger level="INFO" doc:name="Error Logger" doc:id="509eda72-a560-4fea-979b-676cea6becd4" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Resource not found"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 404,
+  "eventId": vars.requestData.headers.'x-vio-transactionid',
+  "error": {
+    "type": "NOT_FOUND",
+    "title": "Resource not found",
+    "details": "The URI requested is invalid or the resource requested does not exists"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform>
+            <logger level="INFO" doc:name="Error Logger" doc:id="4978efa0-e3e6-4a04-9e6b-9777bd9f36cb" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Method not allowed"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 404,
+  "eventId": vars.requestData.headers.'x-vio-transactionid',
+  "error": {
+    "type": "METHOD_NOT_ALLOWED",
+    "title": "Method not allowed",
+    "details": "The method requested is not allowed"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform>
+            <logger level="INFO" doc:name="Error Logger" doc:id="54cc86f8-7785-4865-9729-d2dd380068a3" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -59,20 +91,31 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform>
+            <logger level="INFO" doc:name="Error Logger" doc:id="873bf369-92cf-4f64-8374-def8e349ece6" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Unsupported media type"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 404,
+  "eventId": vars.requestData.headers.'x-vio-transactionid',
+  "error": {
+    "type": "UNSUPPORTED_MEDIAT_TYPE",
+    "title": "Unsupported Media Type",
+    "details": "The media type included is not supported"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform>
+            <logger level="INFO" doc:name="Error Logger" doc:id="eed64682-e93a-4a72-bf4b-25be01051757" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+                <ee:transform doc:name="Error Transform Message">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -84,5 +127,28 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
+		
+		
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="08a41717-4b15-4f32-a41a-b6de1d0ce0a8" type="ANY">
+			<logger level="INFO" doc:name="Error Logger" doc:id="31b6c1ba-8ca7-40a4-86f0-12edadec11d4" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;NA&quot;,&#10;    DestinationApplication: &quot;NA&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Error&quot;&#10;}]"/>
+			<ee:transform doc:name="Erro Transform Message" doc:id="a6a56439-ff36-44bf-848c-fa41bbe474fb" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 500,
+  "eventId": vars.requestData.headers.'x-vio-transactionid',
+  "error": {
+    "type": error.errorType,
+    "title": error.cause,
+    "details": error.description
+  }
+}
+]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
 	</error-handler>
 </mule>

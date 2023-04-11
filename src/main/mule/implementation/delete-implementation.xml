@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="delete-implementationFlow" doc:id="23eea878-2f18-4a40-905a-4401ea80244b" >
+		<set-variable value='#[now() &gt;&gt; "UTC"]' doc:name="Set Variable" doc:id="6a5e1d83-d92f-40f5-958f-6a69912de4dd" variableName="start" />
+		<logger level="INFO" doc:name="Delete Request Logger" doc:id="22dd97b3-c24e-42b4-bf55-a8032c8eff4f" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStamp: now() &gt;&gt; &quot;UTC&quot;,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;Frontend UI&quot;,&#10;    DestinationApplication: &quot;Delete process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Request delete process API&quot;&#10;}]" />
+		<http:request method="DELETE" doc:name="Delete Process API Request" doc:id="cd2e9335-9c2e-4c46-9b6e-6d2855f45b6d" config-ref="HTTP_Request_configuration" path="${http.request.path.delete}" >
+			<http:body ><![CDATA[#[vars.requestData.payload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"clientSecret" : vars.requestData.headers.clientsecret,
+	"x-vio-transactionId" : vars.requestData.headers.'x-vio-transactionid',
+	"clientId" : vars.requestData.headers.clientid
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Delete End Logger" doc:id="6adc0242-82d9-4f2e-b131-727b13ba6a97" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;UTC&quot;) [0 to 18],&#10;    TotalTime: now() &gt;&gt; &quot;UTC&quot;  - vars.start,&#10;    TransactionId: vars.requestData.headers.'x-vio-transactionid',&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Customer Registration&quot;,&#10;    Category: &quot;Customer&quot;,&#10;    OriginatingApplication: &quot;System API&quot;,&#10;    DestinationApplication: &quot;Delete process API&quot;,&#10;    CustomerId: &quot;NA&quot;,&#10;    TxnState: &quot;Response delete process API&quot;&#10;}]" />
+		<ee:transform doc:name="Transform Message" doc:id="d3bd4d42-c9c0-4d41-acac-cf88b4540109" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"customersResponse" : {
+		"eventInstanceId" : vars.requestData.headers.'x-vio-transactionid',
+		"status" : "success"
+}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler ref="global-errorError_Handler" />
+	</flow>
+</mule>
