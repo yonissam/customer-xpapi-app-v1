@@ -39,24 +39,25 @@
 				<version>${munit.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<armDeployment>
-						<muleVersion>4.4.0</muleVersion>
+					<cloudHubDeployment>
 						<uri>https://anypoint.mulesoft.com</uri>
-						<target>server-1</target>
-						<targetType>server</targetType>
-						<username>yoniss</username>
-						<password>yoniss123</password>
+						<muleVersion>4.4.0</muleVersion>
+						<username>${anypoint.username}</username>
+						<password>${anypoint.password}</password>
+						<applicationName>customer-xpapi-app-v1-yoni</applicationName>
 						<environment>Sandbox</environment>
+						<region>us-east-2</region>
+						<workers>1</workers>
+						<workerType>MICRO</workerType>
 						<properties>
-							<http.listener.port>8061</http.listener.port>
-							<http.listener.readtimeout>30000</http.listener.readtimeout>
+							<http.port>8081</http.port>
 							<mule.env>dev</mule.env>
 							<mule.secretKey>MdQSwbvT9C14Nv#rFvpSI6OVP4mj4#@h</mule.secretKey>
 							<api.id>18622425</api.id>
 							<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 							<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
 						</properties>
-					</armDeployment>
+					</cloudHubDeployment>
 				</configuration>
 
 
