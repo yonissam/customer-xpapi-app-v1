@@ -2,7 +2,7 @@ http:
   port: "8061"
   
   request:
-    host: "192.168.0.136"
+    host: "192.168.0.186"
     port: "8062"
     path: 
       register: "/api/customers/registration"
